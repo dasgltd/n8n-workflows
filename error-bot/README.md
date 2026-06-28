@@ -1,12 +1,15 @@
-# Tratamento de Erros Global (Error Bot)
+# Global Error Handling (Error Bot)
 
-Um fluxo projetado para atuar como o "Workflow de Erro" mestre da sua instância do n8n. Quando qualquer outro fluxo da sua conta falhar, ele chama este bot invisível passando os detalhes do erro (ID da execução, nome do fluxo quebrado, mensagem de erro), e este bot notifica você imediatamente.
+A workflow designed to act as the master "Error Workflow" for your n8n instance. Whenever any other workflow in your account fails, it invokes this invisible bot, passing the error details (Execution ID, broken workflow name, error message), and this bot notifies you immediately.
 
-> **Nota sobre Notificações:** Este arquivo `ErrorBot.json` usa um nó do **Telegram** como modelo/padrão para o envio da mensagem. No entanto, sinta-se totalmente livre para apagar o nó do Telegram e substituí-lo pelo canal que for melhor para você (Slack, Microsoft Teams, Discord, Email, etc). A lógica principal de formatação do erro continuará funcionando perfeitamente!
+> **Notification Note:** This `ErrorBot.json` file uses a **Telegram** node as the default template for sending messages. However, feel entirely free to delete the Telegram node and replace it with the channel that works best for you (Slack, Microsoft Teams, Discord, Email, etc.). The core error formatting logic will continue to work perfectly!
 
-## Como instalar:
-1. Crie um novo workflow vazio no n8n.
-2. Importe o conteúdo do arquivo `ErrorBot.json`.
-3. Configure suas credenciais no nó de notificação (Telegram, Slack, Discord, Email, etc.).
-4. Salve e **Ative** o workflow.
-5. Pegue o ID de texto deste workflow na barra de endereços (ex: `v08hZdac5oFON8nz`) e substitua a variável `errorWorkflow` no arquivo `SKILL.md` da skill do n8n caso queira que a IA vincule os erros automaticamente.
+## How to Install:
+1. Create a new empty workflow in n8n.
+2. Import the contents of the `ErrorBot.json` file.
+3. Configure your credentials in the notification node (Telegram, Slack, Discord, Email, etc.).
+4. Save and **Activate** the workflow.
+5. Grab the text ID of this workflow from your address bar (e.g., `v08hZdac5oFON8nz`) and replace the `errorWorkflow` variable in your `SKILL.md` file (if you are using the n8n LLM Skill) so the AI can link errors automatically.
+
+## Keywords
+*Error Handling, Global Error Bot, Notifications, Automation, Telegram, Slack, n8n, Monitoring.*

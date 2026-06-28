@@ -1,10 +1,13 @@
 # Open Source n8n Workflows
 
-Esta pasta contém exemplos de workflows abertos e úteis que complementam a skill **[n8n-workflow-updater](https://github.com/dasgltd/llm-skills/tree/main/skills/n8n-workflow-updater)** e ajudam a manter sua infraestrutura de automação mais profissional e resiliente.
+This repository contains examples of open-source and highly useful n8n workflows. It complements the **[n8n-workflow-updater](https://github.com/dasgltd/llm-skills/tree/main/skills/n8n-workflow-updater)** LLM Skill, helping you maintain a more professional, resilient, and automated low-code infrastructure.
 
-## Workflows Disponíveis
+## Available Workflows
 
-| Workflow | Descrição |
+| Workflow | Description |
 |----------|-----------|
-| [**Error Bot**](./error-bot/) | Workflow mestre de tratamento de erros global. Notifica no Telegram/Slack quando qualquer outro fluxo falha. |
-| [**GitHub Backup**](./github-backup/) | Fluxo autônomo que realiza backup de todos os seus workflows para um repositório Git automaticamente. |
+| [**Error Bot**](./error-bot/) | Global error handling master workflow. It sends notifications to Telegram/Slack whenever any other workflow in your instance fails. |
+| [**GitHub Backup**](./github-backup/) | An autonomous workflow that automatically backs up all your n8n workflows to a Git repository, providing full version control. |
+
+## Keywords
+*Open Source, Automation, n8n, n8n Workflows, Low Code, AI Agents, Infrastructure, Resilience, DevOps.*

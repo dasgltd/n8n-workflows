@@ -1,15 +1,18 @@
 # GitHub Backup
 
-Um fluxo autônomo que realiza um backup periódico e automático de **todos** os seus workflows do n8n (arquivos JSON) direto para um repositório no GitHub. 
+An autonomous workflow that performs a periodic, automatic backup of **all** your n8n workflows (JSON files) straight into a GitHub repository.
 
-## Como instalar:
-1. Importe o `GitHubBackup.json` para o seu n8n.
-2. Crie uma credencial do GitHub no n8n fornecendo o seu Personal Access Token (PAT).
-   > **🛡️ Dica de Segurança (Best Practice):**
-   > Não use um token clássico com acesso total. No GitHub, crie um **"Fine-grained personal access token"**.
-   > - Em **Repository access**, marque `Only select repositories` e escolha **apenas** o repositório específico de backup.
-   > - Em **Permissions**, conceda apenas `Contents: Read and write` (a permissão de *Metadata: Read-only* é marcada automaticamente).
-   > - Assim, mesmo que o token vaze, ele só terá acesso a essa pasta de backups e a mais nenhum repositório seu!
-3. Altere o nó do GitHub para apontar para o nome do seu repositório de backup (ex: `SeuUsuario/n8n-backups`).
-4. (Opcional) Ajuste a frequência de backup no nó *Schedule Trigger* (ex: para rodar de hora em hora ou apenas de madrugada).
-5. Salve e **Ative** o workflow! Assim, você passa a ter controle de versão e histórico visual (commits) de toda a sua infraestrutura no-code.
+## How to Install:
+1. Import `GitHubBackup.json` into your n8n instance.
+2. Create a GitHub credential in n8n by providing your Personal Access Token (PAT).
+   > **🛡️ Security Best Practice:**
+   > Do not use a classic token with full access. In GitHub, create a **"Fine-grained personal access token"**.
+   > - Under **Repository access**, select `Only select repositories` and pick **only** your specific backup repository.
+   > - Under **Permissions**, grant only `Contents: Read and write` (the *Metadata: Read-only* permission is checked automatically).
+   > - This way, even if the token leaks, it will only have access to your backup folder and no other repositories!
+3. Change the GitHub node to point to your backup repository's name (e.g., `YourUsername/n8n-backups`).
+4. (Optional) Adjust the backup frequency in the *Schedule Trigger* node (e.g., to run hourly or only at midnight).
+5. Save and **Activate** the workflow! You now have full version control and visual history (commits) of your entire no-code infrastructure.
+
+## Keywords
+*Automated Backup, GitHub Version Control, Git, Security, Fine-Grained Personal Access Token, CI/CD, DevOps, n8n.*
