@@ -1,0 +1,107 @@
+{
+  "name": "Error Bot via Telegram",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.errorTrigger",
+      "typeVersion": 1,
+      "position": [
+        -336,
+        -96
+      ],
+      "id": "22d4da90-b555-44cd-9552-c6417ec07f82",
+      "name": "Error Trigger"
+    },
+    {
+      "parameters": {
+        "chatId": "YOUR_TELEGRAM_CHAT_ID_HERE",
+        "text": "={{ $json.telegram_message }}",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        80,
+        -96
+      ],
+      "id": "f0c1be53-f12e-4351-8e54-3a225a5aedbd",
+      "name": "Send a error message",
+      "webhookId": "YOUR_WEBHOOK_ID_HERE",
+      "credentials": {
+        "telegramApi": {
+          "id": "YOUR_CREDENTIAL_ID_HERE",
+          "name": "My Telegram API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// N8N Function Node — Formatar erro p/ Telegram com timezone correto\nconst data = $input.all();\n\nconst TZ = 'America/Sao_Paulo';\nconst TELEGRAM_LIMIT = 4096;\nconst SAFE_LIMIT = 3500; // margem de segurança\nconst ERROR_LIMIT = 150; // limite só para o bloco do erro\n\nconst fmt = (iso) =>\n  new Intl.DateTimeFormat('pt-BR', {\n    timeZone: TZ,\n    dateStyle: 'short',\n    timeStyle: 'medium',\n  }).format(new Date(iso));\n\nfunction truncateText(text, maxLen, suffix = '[...\" (truncated)]') {\n  if (!text) return '';\n  const str = String(text);\n  if (str.length <= maxLen) return str;\n  return str.slice(0, maxLen - suffix.length) + suffix;\n}\n\nfunction formatErrorForTelegram(item) {\n  const e = item.json?.execution || {};\n  const w = item.json?.workflow || {};\n\n  const occurredAtISO =\n    e.stoppedAt || e.finishedAt || e.startedAt || new Date().toISOString();\n\n  const rawError =\n    e.error?.message ||\n    e.error?.description ||\n    JSON.stringify(e.error || {}, null, 2) ||\n    'Unknown error';\n\n  const errMsg = truncateText(rawError, ERROR_LIMIT);\n\n  let msg = '';\n  msg += `🚨 *ERROR IN AUTOMATION* 🚨 `;\n  msg += `${fmt(occurredAtISO)}\\n\\n`;\n\n  msg += `📋 *Workflow:* ${w.name || 'N/A'}\\n`;\n  msg += `🆔 *ID:* ${w.id || 'N/A'}\\n\\n`;\n  msg += `⚡ *Execution:* #${e.id || 'N/A'}\\n`;\n  msg += `🔄 *Mode:* ${e.mode || 'N/A'}\\n`;\n  if (e.retryOf) msg += `🔁 *Retry of:* #${e.retryOf}\\n`;\n  if (e.lastNodeExecuted) msg += `📍 *Last node:* ${e.lastNodeExecuted}\\n`;\n  msg += `\\n`;\n\n  msg += `❌ *Error:*\\n${errMsg}\\n\\n`;\n\n  if (e.url) msg += `🔗 *See details:*\\n${e.url}\\n\\n`;\n\n  // trava final de segurança no texto inteiro\n  msg = truncateText(msg, SAFE_LIMIT);\n\n  return {\n    json: {\n      telegram_message: msg,\n      error_summary: {\n        workflow_name: w.name,\n        execution_id: e.id,\n        error_message: errMsg,\n        failed_node: e.lastNodeExecuted || null,\n        occurred_at_iso: occurredAtISO,\n        occurred_at_br: fmt(occurredAtISO),\n        was_truncated: rawError.length > ERROR_LIMIT,\n        original_error_length: String(rawError).length,\n        final_message_length: msg.length,\n      },\n    },\n  };\n}\n\nreturn data.map(formatErrorForTelegram);"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -128,
+        -96
+      ],
+      "id": "09cf2de8-58da-4ba0-a9ad-ab9a548b7e04",
+      "name": "treatErrorMsg"
+    },
+    {
+      "parameters": {
+        "inputSource": "passthrough"
+      },
+      "id": "ebbc7e03-6dd6-4645-9c89-aba6a5050a6d",
+      "typeVersion": 1.1,
+      "name": "When Executed by Another Workflow",
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "position": [
+        -336,
+        -288
+      ]
+    }
+  ],
+  "connections": {
+    "Error Trigger": {
+      "main": [
+        [
+          {
+            "node": "treatErrorMsg",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "treatErrorMsg": {
+      "main": [
+        [
+          {
+            "node": "Send a error message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When Executed by Another Workflow": {
+      "main": [
+        [
+          {
+            "node": "treatErrorMsg",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "timezone": "America/Sao_Paulo",
+    "callerPolicy": "workflowsFromSameOwner",
+    "availableInMCP": true,
+    "binaryMode": "separate"
+  },
+  "meta": {}
+}

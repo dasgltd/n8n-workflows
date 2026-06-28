@@ -1,0 +1,196 @@
+{
+  "name": "Backup Automático de Workflows para o GitHub",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "cronExpression",
+              "expression": "0 2 * * *"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -128,
+        -256
+      ],
+      "id": "85e714a9-720c-4c52-9ba6-81c638a7cf83",
+      "name": "Schedule Trigger"
+    },
+    {
+      "parameters": {
+        "filters": {},
+        "requestOptions": {}
+      },
+      "type": "n8n-nodes-base.n8n",
+      "typeVersion": 1,
+      "position": [
+        96,
+        -256
+      ],
+      "id": "be40566d-26b7-4ccc-ad3d-84f09164dffb",
+      "name": "n8n",
+      "credentials": {
+        "n8nApi": {
+          "id": "YOUR_N8N_CREDENTIAL_ID_HERE",
+          "name": "My n8n API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "workflowId": {
+          "__rl": true,
+          "value": "={{ $json.id }}",
+          "mode": "id"
+        },
+        "requestOptions": {}
+      },
+      "type": "n8n-nodes-base.n8n",
+      "typeVersion": 1,
+      "position": [
+        320,
+        -256
+      ],
+      "id": "c1678659-07f7-4c02-8cd8-fbdeaad36ce3",
+      "name": "n8n1",
+      "credentials": {
+        "n8nApi": {
+          "id": "YOUR_N8N_CREDENTIAL_ID_HERE",
+          "name": "My n8n API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "file",
+        "operation": "edit",
+        "owner": {
+          "__rl": true,
+          "value": "YOUR_GITHUB_USERNAME",
+          "mode": "name"
+        },
+        "repository": {
+          "__rl": true,
+          "value": "YOUR_BACKUP_REPOSITORY_NAME",
+          "mode": "name"
+        },
+        "filePath": "=workflows/{{ $json.name.toLowerCase().replace(/\\s+/g, '-') }}.json",
+        "fileContent": "={{ JSON.stringify($json, null, 2) }}",
+        "commitMessage": "=Backup automático: {{ $json.name }}"
+      },
+      "type": "n8n-nodes-base.github",
+      "typeVersion": 1.1,
+      "position": [
+        560,
+        -256
+      ],
+      "id": "b4bdb413-b60b-4ba5-91d0-73b4c3aa83d4",
+      "name": "Edit a file",
+      "webhookId": "YOUR_WEBHOOK_ID_HERE",
+      "credentials": {
+        "githubApi": {
+          "id": "YOUR_GITHUB_CREDENTIAL_ID_HERE",
+          "name": "My GitHub API"
+        }
+      },
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "resource": "file",
+        "owner": {
+          "__rl": true,
+          "value": "YOUR_GITHUB_USERNAME",
+          "mode": "name"
+        },
+        "repository": {
+          "__rl": true,
+          "value": "YOUR_BACKUP_REPOSITORY_NAME",
+          "mode": "name"
+        },
+        "filePath": "=workflows/{{ $json.name.toLowerCase().replace(/\\s+/g, '-') }}.json",
+        "fileContent": "={{ JSON.stringify($json, null, 2) }}",
+        "commitMessage": "=Backup automático: {{ $json.name }}"
+      },
+      "type": "n8n-nodes-base.github",
+      "typeVersion": 1.1,
+      "position": [
+        832,
+        -240
+      ],
+      "id": "2947cf9c-ef74-4847-8b99-e89c99a32d2b",
+      "name": "Create a file",
+      "webhookId": "YOUR_WEBHOOK_ID_HERE",
+      "credentials": {
+        "githubApi": {
+          "id": "YOUR_GITHUB_CREDENTIAL_ID_HERE",
+          "name": "My GitHub API"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "n8n",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "n8n": {
+      "main": [
+        [
+          {
+            "node": "n8n1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "n8n1": {
+      "main": [
+        [
+          {
+            "node": "Edit a file",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit a file": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Create a file",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "timeSavedMode": "fixed",
+    "errorWorkflow": "YOUR_ERROR_WORKFLOW_ID_HERE",
+    "callerPolicy": "workflowsFromSameOwner",
+    "availableInMCP": false
+  },
+  "meta": {
+    "templateCredsSetupCompleted": true
+  }
+}
